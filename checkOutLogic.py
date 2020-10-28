@@ -5,7 +5,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 
-
+G_shoppingCartWidget = None
+G_totalPrice = None
 def checkOutLogicNotificationCenter(ui, msgType, msg=None):
     """
     结账界面通知中心
@@ -90,18 +91,17 @@ def checkOutLogicNotificationCenter(ui, msgType, msg=None):
         print('un excepted msgType', msgType)
 
 
-def checkOutLogicCustomContextMenu(ui, pos):
+def checkOutLogicCustomContextMenu(pos):
     """
     设置自定义菜单
     :param ui:
     :param pos:
     """
-    print(1)
-    return
+    global G_shoppingCartWidget, G_totalPrice
     row_num = []
     col_num = []
     try:
-        for i in ui.shoppingCartWidget.selectionModel().selection().indexes():
+        for i in G_shoppingCartWidget.selectionModel().selection().indexes():
             if i.row() not in row_num:  # 获取选中的行
                 row_num.append(i.row())
             if i.column() not in col_num:  # 获取选中的列
@@ -116,80 +116,80 @@ def checkOutLogicCustomContextMenu(ui, pos):
     subtractFiveAction = menu.addAction('-5')
     subtractTenAction = menu.addAction('-10')
     clearTenAction = menu.addAction('删除')
-    action = menu.exec_(ui.shoppingCartWidget.mapToGlobal(pos))
+    action = menu.exec_(G_shoppingCartWidget.mapToGlobal(pos))
     if action == addOneAction:
         for row in row_num:
-            goodsNum = int(ui.shoppingCartWidget.item(row, 3).text())
+            goodsNum = int(G_shoppingCartWidget.item(row, 3).text())
             goodsNum += 1
-            ui.shoppingCartWidget.setItem(row, 3, QTableWidgetItem(str(goodsNum)))
-            goodsPrice = float(ui.shoppingCartWidget.item(row, 2).text())
+            G_shoppingCartWidget.setItem(row, 3, QTableWidgetItem(str(goodsNum)))
+            goodsPrice = float(G_shoppingCartWidget.item(row, 2).text())
             totalPrice = '%.2f' % (goodsNum * goodsPrice)
-            ui.shoppingCartWidget.setItem(row, 4, QTableWidgetItem(totalPrice))
+            G_shoppingCartWidget.setItem(row, 4, QTableWidgetItem(totalPrice))
     elif action == addFiveAction:
         for row in row_num:
-            goodsNum = int(ui.shoppingCartWidget.item(row, 3).text())
+            goodsNum = int(G_shoppingCartWidget.item(row, 3).text())
             goodsNum += 5
-            ui.shoppingCartWidget.setItem(row, 3, QTableWidgetItem(str(goodsNum)))
-            goodsPrice = float(ui.shoppingCartWidget.item(row, 2).text())
+            G_shoppingCartWidget.setItem(row, 3, QTableWidgetItem(str(goodsNum)))
+            goodsPrice = float(G_shoppingCartWidget.item(row, 2).text())
             totalPrice = '%.2f' % (goodsNum * goodsPrice)
-            ui.shoppingCartWidget.setItem(row, 4, QTableWidgetItem(totalPrice))
+            G_shoppingCartWidget.setItem(row, 4, QTableWidgetItem(totalPrice))
     elif action == addTenAction:
         for row in row_num:
-            goodsNum = int(ui.shoppingCartWidget.item(row, 3).text())
+            goodsNum = int(G_shoppingCartWidget.item(row, 3).text())
             goodsNum += 10
-            ui.shoppingCartWidget.setItem(row, 3, QTableWidgetItem(str(goodsNum)))
-            goodsPrice = float(ui.shoppingCartWidget.item(row, 2).text())
+            G_shoppingCartWidget.setItem(row, 3, QTableWidgetItem(str(goodsNum)))
+            goodsPrice = float(G_shoppingCartWidget.item(row, 2).text())
             totalPrice = '%.2f' % (goodsNum * goodsPrice)
-            ui.shoppingCartWidget.setItem(row, 4, QTableWidgetItem(totalPrice))
+            G_shoppingCartWidget.setItem(row, 4, QTableWidgetItem(totalPrice))
     elif action == subtractOneAction:
         rowRemoved = 0
         for row in row_num:
-            goodsNum = int(ui.shoppingCartWidget.item(row - rowRemoved, 3).text())
+            goodsNum = int(G_shoppingCartWidget.item(row - rowRemoved, 3).text())
             if goodsNum > 1:
                 goodsNum -= 1
-                ui.shoppingCartWidget.setItem(row - rowRemoved, 3, QTableWidgetItem(str(goodsNum)))
-                goodsPrice = float(ui.shoppingCartWidget.item(row, 2).text())
+                G_shoppingCartWidget.setItem(row - rowRemoved, 3, QTableWidgetItem(str(goodsNum)))
+                goodsPrice = float(G_shoppingCartWidget.item(row, 2).text())
                 totalPrice = '%.2f' % (goodsNum * goodsPrice)
-                ui.shoppingCartWidget.setItem(row - rowRemoved, 4, QTableWidgetItem(totalPrice))
+                G_shoppingCartWidget.setItem(row - rowRemoved, 4, QTableWidgetItem(totalPrice))
             else:
-                ui.shoppingCartWidget.removeRow(row - rowRemoved)
+                G_shoppingCartWidget.removeRow(row - rowRemoved)
                 rowRemoved += 1
     elif action == subtractFiveAction:
         rowRemoved = 0
         for row in row_num:
-            goodsNum = int(ui.shoppingCartWidget.item(row - rowRemoved, 3).text())
+            goodsNum = int(G_shoppingCartWidget.item(row - rowRemoved, 3).text())
             if goodsNum > 5:
                 goodsNum -= 5
-                ui.shoppingCartWidget.setItem(row - rowRemoved, 3, QTableWidgetItem(str(goodsNum)))
-                goodsPrice = float(ui.shoppingCartWidget.item(row, 2).text())
+                G_shoppingCartWidget.setItem(row - rowRemoved, 3, QTableWidgetItem(str(goodsNum)))
+                goodsPrice = float(G_shoppingCartWidget.item(row, 2).text())
                 totalPrice = '%.2f' % (goodsNum * goodsPrice)
-                ui.shoppingCartWidget.setItem(row - rowRemoved, 4, QTableWidgetItem(totalPrice))
+                G_shoppingCartWidget.setItem(row - rowRemoved, 4, QTableWidgetItem(totalPrice))
             else:
-                ui.shoppingCartWidget.removeRow(row - rowRemoved)
+                G_shoppingCartWidget.removeRow(row - rowRemoved)
                 rowRemoved += 1
     elif action == subtractTenAction:
         rowRemoved = 0
         for row in row_num:
-            goodsNum = int(ui.shoppingCartWidget.item(row - rowRemoved, 3).text())
+            goodsNum = int(G_shoppingCartWidget.item(row - rowRemoved, 3).text())
             if goodsNum > 10:
                 goodsNum -= 10
-                ui.shoppingCartWidget.setItem(row - rowRemoved, 3, QTableWidgetItem(str(goodsNum)))
-                goodsPrice = float(ui.shoppingCartWidget.item(row, 2).text())
+                G_shoppingCartWidget.setItem(row - rowRemoved, 3, QTableWidgetItem(str(goodsNum)))
+                goodsPrice = float(G_shoppingCartWidget.item(row, 2).text())
                 totalPrice = '%.2f' % (goodsNum * goodsPrice)
-                ui.shoppingCartWidget.setItem(row - rowRemoved, 4, QTableWidgetItem(totalPrice))
+                G_shoppingCartWidget.setItem(row - rowRemoved, 4, QTableWidgetItem(totalPrice))
             else:
-                ui.shoppingCartWidget.removeRow(row - rowRemoved)
+                G_shoppingCartWidget.removeRow(row - rowRemoved)
                 rowRemoved += 1
     elif action == clearTenAction:
         rowRemoved = 0
         for row in row_num:
-            ui.shoppingCartWidget.removeRow(row - rowRemoved)
+            G_shoppingCartWidget.removeRow(row - rowRemoved)
             rowRemoved += 1
-    rowCnt = ui.shoppingCartWidget.rowCount()
+    rowCnt = G_shoppingCartWidget.rowCount()
     totalPrice = 0
     for row in range(rowCnt):
-        totalPrice += float(ui.shoppingCartWidget.item(row, 4).text())
-    ui.totalPrice.setText('%.2f' % totalPrice)
+        totalPrice += float(G_shoppingCartWidget.item(row, 4).text())
+    G_totalPrice.setText('%.2f' % totalPrice)
 
 
 class checkOutLogicInit:
@@ -199,9 +199,12 @@ class checkOutLogicInit:
 
     # 构造函数
     def __init__(self, ui):
-        # 添加购物车右键选择功能
-        ui.shoppingCartWidget.setContextMenuPolicy(Qt.CustomContextMenu)
-        ui.shoppingCartWidget.customContextMenuRequested.connect(checkOutLogicCustomContextMenu)
+        global G_shoppingCartWidget, G_totalPrice
+        G_shoppingCartWidget = ui.shoppingCartWidget
+        G_totalPrice = ui.totalPrice
+        # 添加购物车右键选择功能-暂时不可用
+        G_shoppingCartWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        G_shoppingCartWidget.customContextMenuRequested.connect(checkOutLogicCustomContextMenu)
 
         ui.VIPIdText.editingFinished.connect(
             lambda: checkOutLogicNotificationCenter(ui, "QueryMemberInformationByVIPID",

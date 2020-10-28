@@ -75,6 +75,8 @@ class checkOutUIInit(QTabWidget):
         titles = ['商品号', '详情', '单价', '数量', '价格']
         self.shoppingCartWidget.setColumnCount(len(titles))
         self.shoppingCartWidget.setHorizontalHeaderLabels(titles)
+        self.shoppingCartWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 设置不可编辑
+        self.shoppingCartWidget.setSelectionBehavior(QAbstractItemView.SelectRows)  # 设置选择整行
         Layout.addWidget(self.shoppingCartWidget, 0, 0, 1, 1)
 
         self.checkOutShoppingCartBox.setLayout(Layout)
