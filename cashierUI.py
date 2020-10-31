@@ -8,8 +8,11 @@ from purchaseUI import *
 from checkOutLogic import checkOutLogicInit
 from VIPLogic import VIPLogicInit
 from purchaseLogic import purchaseLogicInit
+from configUI import configUIInit
+from configLogic import configLogicInit
 
-class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit):
+
+class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit, configUIInit):
     """
     1
     """
@@ -20,18 +23,22 @@ class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit):
         VIPUIInit.__init__(self)
         inventoryUIInit.__init__(self)
         purchaseUIInit.__init__(self)
+        configUIInit.__init__(self)
+
         self.VIPIdText.installEventFilter(self)
+
+        self.insertTab(0, self.checkOutTab, "收银系统")
+        self.insertTab(1, self.VIPTab, "会员系统")
+        self.insertTab(2, self.inventoryTab, "货物清单")
+        self.insertTab(3, self.purchaseTab, "进货系统")
+        self.insertTab(4, self.configTab, "设置")
 
         checkOutLogicInit(self)
         VIPLogicInit(self)
         purchaseLogicInit(self)
+        configLogicInit(self)
 
         self.setWindowTitle('收银系统')
-
-        self.addTab(self.checkOutTab, "收银系统")
-        self.addTab(self.VIPTab, "会员系统")
-        self.addTab(self.inventoryTab, "货物清单")
-        self.addTab(self.purchaseTab, "进货系统")
 
         self.setMinimumSize(940, 400)
 
@@ -52,6 +59,7 @@ class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit):
         #             self.VIPIdText.setText("请输入会员卡号")
         #     return False
         return False
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

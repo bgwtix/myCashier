@@ -5,6 +5,7 @@ import sys
 from PyQt5.QtWidgets import *
 from cashierUI import Widget_init
 import MySQLdb
+from myConfig import myConfig
 from PyQt5.QtCore import Qt, QPoint
 
 
@@ -29,12 +30,13 @@ def connectMySQL():
     return myDb, myCursor
 
 
-class myCashier(Widget_init):
+class myCashier(Widget_init, myConfig):
     """
     是
     """
 
     def __init__(self):
+        myConfig.__init__(self)
         Widget_init.__init__(self)
         self.myDb, self.myCursor = connectMySQL()
         if self.myDb is None:
