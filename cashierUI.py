@@ -5,11 +5,12 @@ from checkOutUI import *
 from VIPUI import *
 from inventoryUI import *
 from purchaseUI import *
+from configUI import configUIInit
 from checkOutLogic import checkOutLogicInit
 from VIPLogic import VIPLogicInit
 from purchaseLogic import purchaseLogicInit
-from configUI import configUIInit
 from configLogic import configLogicInit
+from inventoryLogic import inventoryLogicInit
 
 
 class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit, configUIInit):
@@ -25,7 +26,8 @@ class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit, co
         purchaseUIInit.__init__(self)
         configUIInit.__init__(self)
 
-        self.VIPIdText.installEventFilter(self)
+        # self.VIPIdText.installEventFilter(self)
+        # self.checkOutInputIDText.installEventFilter(self)
 
         self.insertTab(0, self.checkOutTab, "收银系统")
         self.insertTab(1, self.VIPTab, "会员系统")
@@ -35,6 +37,7 @@ class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit, co
 
         checkOutLogicInit(self)
         VIPLogicInit(self)
+        inventoryLogicInit(self)
         purchaseLogicInit(self)
         configLogicInit(self)
 
@@ -42,23 +45,30 @@ class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit, co
 
         self.setMinimumSize(940, 400)
 
-    def eventFilter(self, obj, event):
-        """
-
-        :param obj:
-        :param event:
-        :return:
-        """
-        # if obj == self.VIPIdText:
-        #     if event.type() == QEvent.FocusIn:
-        #         # self.inp_text_signal.emit("已进")
-        #         if self.VIPIdText.text().strip() == '请输入会员卡号':
-        #             self.VIPIdText.clear()
-        #     elif event.type() == QEvent.FocusOut:
-        #         if self.VIPIdText.text().strip() == '':
-        #             self.VIPIdText.setText("请输入会员卡号")
-        #     return False
-        return False
+    # def eventFilter(self, obj, event):
+    #     """
+    #     运行会变慢
+    #     :param obj:
+    #     :param event:
+    #     :return:
+    #     """
+    #     if obj == self.VIPIdText:
+    #         if event.type() == QEvent.FocusIn:
+    #             if obj.text().strip() == '请输入会员卡号':
+    #                 obj.clear()
+    #         elif event.type() == QEvent.FocusOut:
+    #             if obj.text().strip() == '':
+    #                 obj.setText("请输入会员卡号")
+    #         return False
+    #     if obj == self.checkOutInputIDText:
+    #         if event.type() == QEvent.FocusIn:
+    #             if obj.text().strip() == '请输入商品号':
+    #                 obj.clear()
+    #         elif event.type() == QEvent.FocusOut:
+    #             if obj.text().strip() == '':
+    #                 obj.setText("请输入商品号")
+    #         return False
+    #     return False
 
 
 if __name__ == '__main__':

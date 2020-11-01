@@ -37,11 +37,10 @@ class myCashier(Widget_init, myConfig):
 
     def __init__(self):
         myConfig.__init__(self)
-        Widget_init.__init__(self)
         self.myDb, self.myCursor = connectMySQL()
+        Widget_init.__init__(self)
         if self.myDb is None:
-            QMessageBox.question(self, '错误', '连接服务器失败',
-                                 QMessageBox.Yes, QMessageBox.Yes)
+            QMessageBox.about(self, '错误', '连接服务器失败',)
             quit(1)
 
     def closeEvent(self, event):
@@ -49,18 +48,15 @@ class myCashier(Widget_init, myConfig):
 
         :param event:
         """
-        print('close')
-        if 1:
-            reply = QMessageBox.question(self, '信息', '确认退出吗？',
-                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+        reply = QMessageBox.question(self, '信息', '确认退出吗？',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
-            if reply == QMessageBox.Yes:
-                self.myCursor.close()
-                self.myDb.close()
-                event.accept()
-            else:
-                event.ignore()
-        print('close done')
+        if reply == QMessageBox.Yes:
+            self.myCursor.close()
+            self.myDb.close()
+            event.accept()
+        else:
+            event.ignore()
 
 
 def gui_main(maxFlag=0):

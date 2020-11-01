@@ -14,7 +14,7 @@ class configUIInit(QTabWidget):
     def __init__(self):
         super().__init__()
         self.configTab = QWidget()
-        self.customConfigBox = QGroupBox('新增货物类型')
+        self.customConfigBox = QGroupBox('基本设置')
         self.purchaseMode = QCheckBox("进货模式关闭")
 
         self.addCustomConfigBoxLayout()
@@ -35,7 +35,6 @@ class configUIInit(QTabWidget):
         新增自定义界面
         """
         Layout = QFormLayout()
-        Layout1 = QFormLayout()
         Layout.addRow(self.purchaseMode)
         self.customConfigBox.setLayout(Layout)
 
