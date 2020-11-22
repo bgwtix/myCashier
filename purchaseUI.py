@@ -31,8 +31,18 @@ class purchaseUIInit(QTabWidget):
         self.deletePurchaseRemarksEdit = QLineEdit()
         self.purchaseDeleteButton = QPushButton('删除货物类型')
 
+        self.purchaseBox = QGroupBox('进货')
+        self.purchaseIdEdit = QLineEdit()
+        self.purchaseIdResult = QLabel('请输入货物编号')
+        self.purchasePurchasePriceEdit = QLineEdit()
+        self.purchasePriceEdit = QLineEdit()
+        self.purchaseRemarksEdit = QLineEdit()
+        self.purchaseNumberEdit = QLineEdit()
+        self.purchaseButton = QPushButton('确定')
+
         self.addAddPurchaseBoxLayout()
         self.addDeletePurchaseBoxLayout()
+        self.addPurchaseBoxLayout()
         self.showPurchaseUILayout()
 
     def showPurchaseUILayout(self):
@@ -42,6 +52,7 @@ class purchaseUIInit(QTabWidget):
         Layout = QGridLayout()
         Layout.addWidget(self.addPurchaseBox, 0, 0, 1, 1)
         Layout.addWidget(self.deletePurchaseBox, 1, 0, 1, 1)
+        # Layout.addWidget(self.purchaseBox, 0, 1, 2, 1)
         Layout.setColumnStretch(1, 1)
         Layout.setRowStretch(5, 1)
         self.purchaseTab.setLayout(Layout)
@@ -66,6 +77,31 @@ class purchaseUIInit(QTabWidget):
 
         self.deletePurchaseBox.setLayout(Layout)
 
+    def addPurchaseBoxLayout(self):
+        """
+        新增货物界面
+        """
+        Layout = QFormLayout()
+        Layout1 = QFormLayout()
+        Layout.setLabelAlignment(Qt.AlignRight)
+        regExp1 = QRegExp('\d{1,11}')  # 设置会员号为最大11位数字
+        self.purchaseIdEdit.setValidator(QRegExpValidator(regExp1, self))
+        regExp1 = QRegExp('\d{1,8}.\d{0,2}')  # 设置会员号为最大11位数字
+        self.purchasePurchasePriceEdit.setValidator(QRegExpValidator(regExp1, self))
+        self.purchasePriceEdit.setValidator(QRegExpValidator(regExp1, self))
+        self.purchaseIdResult.setEnabled(False)
+        self.purchaseButton.setEnabled(False)
+        Layout1.addRow(self.purchaseIdEdit, self.purchaseIdResult)
+        Layout.addRow('货物编号：', Layout1)
+        Layout.addRow('进价：', self.purchasePurchasePriceEdit)
+        Layout.addRow('售价：', self.purchasePriceEdit)
+        Layout.addRow('货物描述：', self.purchaseRemarksEdit)
+        Layout.addRow('进货数量：', self.purchaseNumberEdit)
+
+        Layout.addRow(self.purchaseButton)
+
+        self.purchaseBox.setLayout(Layout)
+
     def addAddPurchaseBoxLayout(self):
         """
         新增货物界面
@@ -89,7 +125,6 @@ class purchaseUIInit(QTabWidget):
         Layout.addRow(self.purchaseAddButton)
 
         self.addPurchaseBox.setLayout(Layout)
-
 
 
 

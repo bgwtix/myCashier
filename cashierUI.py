@@ -41,8 +41,8 @@ class Widget_init(checkOutUIInit, VIPUIInit, inventoryUIInit, purchaseUIInit, co
         purchaseLogicInit(self)
         configLogicInit(self)
 
-        self.setWindowTitle('收银系统')
-
+        self.setWindowTitle('收银系统 0.0.0.1')
+        self.setWindowIcon(QIcon("ico/main.ico"))
         self.setMinimumSize(940, 400)
 
     # def eventFilter(self, obj, event):

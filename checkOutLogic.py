@@ -2,11 +2,20 @@
 # -*- coding: utf-8 -*-
 
 
-from PyQt5.QtWidgets import *
+import os
+import sys
+import time
+import scipy.io as scio
+import numpy as np
+import datetime
+
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
 
 G_shoppingCartWidget = None
 G_totalPrice = None
+
+
 def checkOutLogicNotificationCenter(ui, msgType, msg=None):
     """
     结账界面通知中心
@@ -87,8 +96,68 @@ def checkOutLogicNotificationCenter(ui, msgType, msg=None):
             for row in range(rowCnt):
                 totalPrice += float(ui.shoppingCartWidget.item(row, 4).text())
             ui.totalPrice.setText('%.2f' % totalPrice)
-    else:
-        print('un excepted msgType', msgType)
+    elif msgType == "paymentB":
+        if float(ui.totalPrice.text()) > 0:
+
+            if ui.VIPId.text() != '' and float(ui.VIPMoney.text()) > float(ui.totalPrice.text()):
+                vipFlag = 1
+                message = '确认结账？'
+            else:
+                vipFlag = 0
+                message = '会员卡余额不足, 确认结账？'
+            reply = QMessageBox.question(ui, '信息', message,
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+
+            if reply == QMessageBox.Yes:
+                if vipFlag:
+                    sql = "UPDATE vip SET money=%s, integral=%s WHERE vipID = %s LIMIT 1"
+                    money = float(ui.VIPMoney.text()) - float(ui.totalPrice.text())
+                    integral = float(ui.VIPIntegral.text()) + float(ui.totalPrice.text())
+                    val = (str(money), str(integral), ui.VIPId.text())
+                    myResult = ui.myCursor.execute(sql % val)
+                    if myResult == 1:
+                        ui.memberRechargeBalanceEdit.setText(str(money))
+                        ui.memberRechargeMoneyEdit.setText('')
+                        ui.myDb.commit()
+                        ui.VIPIntegral.setText(str(integral))
+                        ui.VIPMoney.setText(str(money))
+                        ui.totalPrice.setText('0.00')
+
+                        nowTime = time.time()
+                        row_num = ui.shoppingCartWidget.rowCount()
+
+                        filePath = os.path.dirname(os.path.realpath(sys.argv[0])) + '//log//' + \
+                                   str(datetime.datetime.now().year) + '_' + str(datetime.datetime.now().month) + \
+                                   '//VIP'
+                        if os.path.exists(filePath) is False:
+                            try:
+                                os.makedirs(filePath)
+                            except Exception as e:
+                                print(e)
+                        fileName = filePath + '//%s.mat' % ui.VIPId.text()
+                        if os.path.isfile(fileName) is not False:
+                            vipLog = scio.loadmat(fileName, squeeze_me=True)
+                            vipLog.pop('__header__')
+                            vipLog.pop('__version__')
+                            vipLog.pop('__globals__')
+                        else:
+                            vipLog = {'timeStamp': [],
+                                      'goodsID': [],
+                                      'goodCount': [],
+                                      'goodPrice': [],
+                                      }
+                        for row in range(row_num):
+                            vipLog['timeStamp'] = np.append(vipLog['timeStamp'], nowTime)
+
+                            vipLog['goodsID'] = np.append(vipLog['goodsID'],
+                                                          int(ui.shoppingCartWidget.item(0, 0).text()))
+                            vipLog['goodPrice'] = np.append(vipLog['goodPrice'],
+                                                            float(ui.shoppingCartWidget.item(0, 2).text()))
+                            vipLog['goodCount'] = np.append(vipLog['goodCount'],
+                                                            int(ui.shoppingCartWidget.item(0, 3).text()))
+                            ui.shoppingCartWidget.removeRow(0)
+                        QMessageBox.about(ui, '成功', '交易成功')
+                        scio.savemat(fileName, vipLog)
 
 
 def checkOutLogicCustomContextMenu(pos):
@@ -214,3 +283,5 @@ class checkOutLogicInit:
                                                     ui.checkOutInputIDText.text()))
         ui.addToShoppingCartButton.clicked.connect(
             lambda: checkOutLogicNotificationCenter(ui, "addCurrentItemToShoppingCart"))
+        ui.paymentButton.clicked.connect(
+            lambda: checkOutLogicNotificationCenter(ui, "paymentB"))

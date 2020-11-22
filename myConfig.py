@@ -14,20 +14,21 @@ class myConfig:
     def __init__(self):
         filePath = os.path.dirname(os.path.realpath(sys.argv[0])) + '//config'
         self.fileName = filePath + '//config.mat'
-        self.saveConfigFunction = self.saveConfig
         if os.path.exists(filePath) is False:
             try:
                 os.makedirs(filePath)
             except Exception as e:
                 print(e)
         self.config = self.loadConfig()
+        self.saveConfigFunction = self.saveConfig
 
     def setConfigToDefault(self):
         """
         默认配置
         """
         config = {
-            'purchaseMode': '0',  # 开启进货界面
+            'purchaseMode': 1,  # 开启进货界面
+            'itemsPerPage': 10,  # 货物清单界面没页显示的商品数量
         }
         return config
 
@@ -43,7 +44,7 @@ class myConfig:
         """
         if os.path.isfile(self.fileName) is False:
             config = self.setConfigToDefault()
-            self.saveConfig()
+            # self.saveConfig()
         else:
             config = scio.loadmat(self.fileName)
             config.pop('__header__')
